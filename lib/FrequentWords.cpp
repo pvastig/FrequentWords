@@ -1,6 +1,7 @@
 #include "FrequentWords.h"
 
 #include <regex>
+#include <set>
 
 std::string strTolower(std::string s)
 {
@@ -21,4 +22,32 @@ std::map<std::string, int> pa::getMappedWords(const std::string& words)
     }
 
     return wordsToCount;
+}
+
+std::string pa::sortMappedWords(const std::map<std::string, int>& wordsToCount)
+{
+    std::multimap<int, std::string> countToWords;
+    std::set<int, std::greater<>> wordCount;
+    for (const auto& item : wordsToCount) {
+        countToWords.emplace(item.second, item.first);
+        wordCount.emplace(item.second);
+    }
+
+    using MapIterator = std::multimap<int, std::string>::iterator;
+    std::vector<std::pair<MapIterator, MapIterator>> iters;
+
+    for (auto num : wordCount) {
+        auto iterator = countToWords.equal_range(num);
+        iters.push_back(std::move(iterator));
+    }
+
+    std::string output;
+    output.reserve(wordsToCount.size());
+    for (const auto& item : iters) {
+        for (auto it = item.first; it != item.second; ++it) {
+            output += std::string(std::to_string(it->first) + " - " + it->second + '\n');
+        }
+    }
+
+    return output;
 }

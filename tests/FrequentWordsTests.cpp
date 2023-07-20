@@ -7,9 +7,20 @@ namespace pa {
 TEST(FrequentWords, SimpleCases)
 {
     {
+        const std::string text = "...,,,!!!???";
+        const auto words = getMappedWords(text);
+        ASSERT_EQ(words.size(), 0);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 0);
+    }
+    {
         const std::string text;
         const auto words = getMappedWords(text);
         ASSERT_EQ(words.size(), 0);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 0);
     }
     {
         const std::string text = "a";
@@ -17,6 +28,10 @@ TEST(FrequentWords, SimpleCases)
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 1);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "1 - a\n");
     }
     {
         const std::string text = "a a a";
@@ -24,6 +39,10 @@ TEST(FrequentWords, SimpleCases)
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 3);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "3 - a\n");
     }
     {
         const std::string text = "a,a!a";
@@ -31,6 +50,10 @@ TEST(FrequentWords, SimpleCases)
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 3);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "3 - a\n");
     }
     {
         const std::string text = "!a-a;a";
@@ -38,17 +61,25 @@ TEST(FrequentWords, SimpleCases)
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 3);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "3 - a\n");
     }
 }
 
 TEST(FrequentWords, CamelCases)
 {
     {
-        const std::string text = "A A A";
+        const std::string text = ",A a A!";
         const auto words = getMappedWords(text);
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 3);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "3 - a\n");
     }
     {
         const std::string text = "A A A";
@@ -56,6 +87,10 @@ TEST(FrequentWords, CamelCases)
         ASSERT_EQ(words.size(), 1);
         ASSERT_EQ(words.cbegin()->first, "a");
         ASSERT_EQ(words.cbegin()->second, 3);
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 6);
+        ASSERT_EQ(sortedWords, "3 - a\n");
     }
 }
 TEST(FrequentWords, ComplexCases)
@@ -84,6 +119,12 @@ TEST(FrequentWords, ComplexCases)
             ASSERT_EQ(refIt->first, it->first);
             ASSERT_EQ(refIt->second, it->second);
         }
+
+        const auto sortedWords = sortMappedWords(words);
+        ASSERT_EQ(sortedWords.size(), 96);
+        ASSERT_EQ(sortedWords,
+                  "2 - the\n1 - come\n1 - has\n1 - many\n1 - of\n1 - sad\n1 - talk\n1 - things\n1 "
+                  "- time\n1 - to\n1 - warlis\n");
     }
 }
 
