@@ -1,5 +1,6 @@
 #include "FrequentWords.h"
 
+#include <fstream>
 #include <regex>
 #include <set>
 
@@ -50,4 +51,28 @@ std::string pa::sortMappedWords(const std::map<std::string, int>& wordsToCount)
     }
 
     return output;
+}
+
+std::string pa::readWordsFromFile(const std::string& file)
+{
+    std::ifstream ifs(file);
+    if (!ifs) {
+        return {};
+    }
+
+    return std::string{std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()};
+}
+
+void pa::writeToFile(const std::string& file, const std::string& data)
+{
+    std::ofstream ofs(file);
+    std::copy(data.begin(), data.end(), std::ostreambuf_iterator<char>(ofs));
+}
+
+void pa::countFrequentWords(const std::string& inputFile, const std::string& outputFile)
+{
+    const auto words = pa::readWordsFromFile(inputFile);
+    const auto mappedWords = pa::getMappedWords(words);
+    const auto sortedWords = pa::sortMappedWords(mappedWords);
+    pa::writeToFile(outputFile, sortedWords);
 }
